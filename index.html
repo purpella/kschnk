@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>С днём рождения!</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="lock">
+
+<div class="curtain" id="curtain">
+  <div class="inner">
+    <p class="kicker">Для тебя есть маршрут</p>
+    <button id="start" type="button">ГАЗ!</button>
+  </div>
+</div>
+
+<div class="sky"></div>
+<div class="stars" id="stars"></div>
+<div class="city far" id="cityFar"></div>
+<div class="city near" id="cityNear"></div>
+<div class="road" id="road"></div>
+
+<div class="car" id="car">
+  <div class="shadow"></div>
+  <div class="beam" id="beam"></div>
+  <div class="carbox" id="carbox"><img id="carImg" alt="Audi A6 C6"></div>
+</div>
+<div class="poles" id="poles"></div>
+
+<p id="nocar" hidden>Положи картинку <b>car.png</b> в ту же папку, где лежит index.html</p>
+<div class="hud" aria-hidden="true"><span id="kmh">0</span> км/ч</div>
+<nav class="dots" id="dots" aria-label="Разделы"></nav>
+
+<main>
+  <section data-title="Старт" class="stop">
+    <h1 class="rv">С днём рождения, <span id="name">Кащ</span>!</h1>
+    <p class="lead rv" style="--i:1" id="subtitle"></p>
+    <p class="hint rv" style="--i:2">Листай вниз: машина поедет вместе с тобой</p>
+  </section>
+
+  <section data-title="Пожелания" class="stop">
+    <h2 class="rv">Пожелания в дорогу</h2>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section data-title="Приборка" class="stop">
+    <h2 class="rv">Приборная панель твоего года</h2>
+    <div class="cards" id="stats"></div>
+  </section>
+
+  <section data-title="Дорога" class="stop">
+    <h2 class="rv">Что мы уже проехали</h2>
+    <ol class="tl" id="timeline"></ol>
+  </section>
+
+  <section data-title="Финиш" class="stop">
+    <h2 class="rv">Это не финиш, а новый старт</h2>
+    <p class="lead rv" style="--i:1" id="final"></p>
+    <button class="rv" style="--i:2" id="salute" type="button">Салют</button>
+    <p class="sign rv" style="--i:3" id="sign"></p>
+  </section>
+</main>
+
+<canvas id="confetti"></canvas>
+<script src="script.js"></script>
+</body>
+</html>
