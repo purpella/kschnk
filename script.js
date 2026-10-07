@@ -41,6 +41,7 @@ const CONFIG = {
   ],
   // Музыка: "music/track.mp3" (запустится после кнопки ГАЗ!). Пусто = без музыки.
   music: "music/track.mp3",
+  musicVolume: 0.05,   // громкость музыки: от 0 (тишина) до 1 (максимум)
   // Цвета: accent (золотой) и blue (синий)
   theme: { accent: "#ffc15e", blue: "#3a6cf0" },
   // Мини-игра «встречка»
@@ -54,6 +55,23 @@ const CONFIG = {
     winImage: "meme.jpg",  // твоё фото/мем для победы (положи рядом с index.html)
     winTitle: "Финиш! Ты победил",
     winText: "Держи заслуженного афро-бурята."
+  },
+
+  // Заставка под трек. Музыка стартует по кнопке ГАЗ!, все времена в секундах от начала трека.
+  // Подгонка: открой index.html?introdebug=1, слушай трек и нажимай M на каждом реве, Enter на дропе.
+  intro: {
+    enabled: true,
+    revs: [                                 // моменты ревов: появляется картинка вместо чёрного экрана
+      { at: 0.4, dur: 1.4, img: "intro/1.png" },                //   можно свои кадры: img: "intro/a.jpg" или ["intro/1.jpg", "intro/2.jpg"]
+      { at: 7.5, dur: 1.6, power: 1.3, img: "intro/2.png" }     //   power: сила эффекта (тряска, свет)
+    ],
+    dropAt: 14.0,                            // секунда дропа: вспышка и появление сайта
+    hits: [],                               // доп. вспышки в такт, например [4.0, 4.5, 5.0]
+    video: "",                              // например "intro/intro.mp4" (без звука, видно на ревах)
+    videoAlways: false,                     // true: видео видно всё время заставки
+    fps: 12,                                // скорость смены кадров, если img это список
+    confetti: false,                        // true: салют на дропе
+    skipText: "Пропустить"
   },
 
   // Припаркованные машины на фоне (PNG сбоку). Кладёшь файлы рядом с index.html.
@@ -72,8 +90,8 @@ const CONFIG = {
     spinWheels: true,      // вращать диски (false, если выглядит плохо)
     // Положение в долях картинки (0..1): x от левого края, y от верха, r радиус диска от ширины
     // у каждого колеса свои числа (на фото машина стоит чуть под углом)
-    wheels: [{"x":0.213,"y":0.728,"r":0.064},{"x":0.79,"y":0.72,"r":0.066}],
-    light: {"x":0.928,"y":0.521}
+    wheels: [{"x":0.211,"y":0.745,"r":0.067},{"x":0.804,"y":0.745,"r":0.066}],
+    light: {"x":0.911,"y":0.538}
   }
 };
 /* Подгонка: открой index.html?debug=1, красные круги должны лечь на диски,
@@ -150,7 +168,7 @@ order.forEach((id) => { if (byId[id] && !empty[id]) main.append(byId[id]); });
 Object.keys(byId).forEach((id) => { if (!order.includes(id) || empty[id]) byId[id].remove(); });
 if (CONFIG.music) {
   const bgm = $("bgm"), sb = $("sound");
-  bgm.src = CONFIG.music; sb.hidden = false;
+  bgm.src = CONFIG.music; bgm.preload = "auto"; bgm.volume = Math.min(1, Math.max(0, CONFIG.musicVolume ?? 0.2)); sb.hidden = false;
   sb.onclick = () => { if (bgm.paused) { bgm.play(); sb.textContent = "🔊"; } else { bgm.pause(); sb.textContent = "🔇"; } };
 }
 
@@ -171,9 +189,12 @@ function reveal(sec) {
     const big = el.querySelector(".big"); if (big) count(big);
   });
 }
+let ready = false;
+const pending = [];
+function siteReady() { ready = true; pending.splice(0).forEach(reveal); }
 const io = "IntersectionObserver" in window
   ? new IntersectionObserver((es) => es.forEach((e) => {
-      if (e.isIntersecting) { reveal(e.target); io.unobserve(e.target); }
+      if (e.isIntersecting) { ready ? reveal(e.target) : pending.push(e.target); io.unobserve(e.target); }
     }), { rootMargin: "0px 0px -15% 0px" })
   : null;
 
@@ -275,12 +296,20 @@ function rev() {
     o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + 1.5);
   } catch (e) {}
 }
-$("start").addEventListener("click", () => {
-  $("curtain").classList.add("open");
+function openSite(synth) {
   document.body.classList.remove("lock");
   document.body.classList.add("started");
-  rev();
-  if (CONFIG.music) $("bgm").play().catch(() => {});
+  if (synth) rev();
+  siteReady();
+}
+$("start").addEventListener("click", () => {
+  $("curtain").classList.add("open");
+  if (CONFIG.music) {
+    const b = $("bgm");
+    b.volume = Math.min(1, Math.max(0, CONFIG.musicVolume ?? 0.2)); b.currentTime = 0; b.play().catch(() => {});
+  }
+  if (CONFIG.intro && CONFIG.intro.enabled && window.runIntro) return window.runIntro(openSite);
+  openSite(true);
 });
 
 /* салют */
