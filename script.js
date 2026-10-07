@@ -1,10 +1,10 @@
 /* ====== РЕДАКТИРУЙ ТОЛЬКО ЭТОТ БЛОК ====== */
 const CONFIG = {
   name: "Кирилл",
-  subtitle: "Кайфуй так как ты уже это делаешь на своей А6(не путать с А4): ровно, быстро и с попутным ветром.",
+  subtitle: "Кайфуй так как ты уже это делаешь на своей А6 (не путать с А4): ровно, быстро и с попутным ветром.",
   wishes: [
-    { t: "Здоровье", d: "Чтобы мотор тянул без чек-энджина и без капремонта." },
-    { t: "Удача", d: "Зелёная волна на всех светофорах и свободная парковка у цели." },
+    { t: "Здоровье", d: "Чтобы без  радиатор брокен (похренокен🤣😂🤣😂🤣)." },
+    { t: "Удача", d: "Зелёная волна на всех светофорах и свободная парковка в центре ТМБ." },
     { t: "Драйв", d: "Больше дорог, поездок и мест, куда стоит доехать." }
   ],
   stats: [
@@ -14,12 +14,57 @@ const CONFIG = {
     { n: 6, s: " цил.", l: "Настроение" }
   ],
   memories: [
-    { y: "Начало", t: "Тот день, когда мы поняли, что дружим надолго." },
-    { y: "Дорога", t: "Поездки, шутки и разговоры, которые длились дольше маршрута." },
-    { y: "Сейчас", t: "Ты всё так же тот человек, на которого можно положиться." }
+    { y: "Топ 1", t: "Крипи place." },
+    { y: "Топ 2", t: "Тулиновка." },
+    { y: "Топ 3", t: "Когдаа они говорят бовоят фто ты не сможешь собрать тот самый лук тем временеее я🤣🤣." }
   ],
-  final: "Спасибо, что ты рядом. Впереди ещё очень много километров, и я хочу проехать их вместе с тобой.",
+  final: "Спасибо, что ты рядом. Я очень тебя уважаю и ценю, продолжай оставаться собой и радовать родных и близких, ежже.",
   signature: "С любовью, твой друг Масел",
+
+  /* ---------- НОВОЕ: кастомизация ---------- */
+  // Порядок разделов. Убери id из списка, чтобы скрыть раздел.
+  sections: ["hero", "wishes", "gallery", "stats", "road", "video", "game", "finish"],
+  // Фотоальбом (раздел появится, когда список не пуст). Файлы клади в папку photos/
+  gallery: [
+     { src: "photos/1.jpg", caption: "Sharaga mood" },
+     { src: "photos/2.jpg", caption: "Badminton mood" },
+     { src: "photos/3.jpg", caption: "Offnik mood" },
+     { src: "photos/4.jpg", caption: "Drip mood" },
+     { src: "photos/5.jpg", caption: "Sueta mood" },
+     { src: "photos/6.jpg", caption: "Zesty mood" },
+    
+  ],
+  // Видео: свой файл (videos/trip.mp4) или YouTube (id из ссылки). Пока список пуст, раздела нет.
+  videos: [
+     { src: "videos/trip.mp4", poster: "photos/cover.jpg",  title: "Гранд мувик" },
+    // { youtube: "ID_РОЛИКА", title: "Ролик" },
+  ],
+  // Музыка: "music/track.mp3" (запустится после кнопки ГАЗ!). Пусто = без музыки.
+  music: "music/track.mp3",
+  // Цвета: accent (золотой) и blue (синий)
+  theme: { accent: "#ffc15e", blue: "#3a6cf0" },
+  // Мини-игра «встречка»
+  game: {
+    enabled: true,
+    title: "Мини-игра: встречка",
+    lead: "Объезжай встречный трафик и доезжай до финиша. Справишься, получишь сюрприз.",
+    winDistance: 2000,     // сколько метров надо проехать
+    startSpeed: 150,        // км/ч в начале
+    maxSpeed: 330,         // км/ч в конце разгона
+    winImage: "meme.jpg",  // твоё фото/мем для победы (положи рядом с index.html)
+    winTitle: "Финиш! Ты победил",
+    winText: "Держи заслуженного афро-бурята."
+  },
+
+  // Припаркованные машины на фоне (PNG сбоку). Кладёшь файлы рядом с index.html.
+  //  at     - где машина проезжает мимо центра экрана: 0 = старт, 1 = финиш (можно списком: [0.2, 0.6])
+  //  scale  - размер относительно главной машины (0.85 = чуть меньше)
+  //  bottom - высота над низом экрана в vh (больше = дальше от зрителя)
+  //  mirror - true, если машину нужно развернуть в другую сторону
+  parked: [
+    { src: "parked1.png", at: 0.3, scale: 1, bottom: 8, mirror: false },
+    { src: "parked2.png", at: 0.75, scale: 1, bottom: 8, mirror: false }
+  ],
 
   car: {
     src: "car.png",        // файл с машиной рядом с index.html
@@ -48,6 +93,18 @@ $("subtitle").textContent = CONFIG.subtitle;
 $("final").textContent = CONFIG.final;
 $("sign").textContent = CONFIG.signature;
 const mk = (tag, cls, i) => { const e = document.createElement(tag); e.className = cls; e.style.setProperty("--i", i); return e; };
+const lb = $("lightbox");
+function openLb(src, cap) { $("lbImg").src = src; $("lbCap").textContent = cap || ""; lb.hidden = false; document.body.classList.add("modal-open"); }
+function closeLb() { lb.hidden = true; document.body.classList.remove("modal-open"); }
+lb.addEventListener("click", closeLb);
+addEventListener("keydown", (e) => { if (e.key === "Escape" && !lb.hidden) closeLb(); });
+function photo(src, cap) {
+  const im = document.createElement("img");
+  im.src = src; im.alt = cap || ""; im.loading = "lazy";
+  im.onerror = () => im.remove();
+  im.onclick = () => openLb(src, cap);
+  return im;
+}
 CONFIG.wishes.forEach((w, i) => {
   const c = mk("div", "card rv", i), h = document.createElement("h3"), p = document.createElement("p");
   h.textContent = w.t; p.textContent = w.d; c.append(h, p); $("cards").append(c);
@@ -59,8 +116,43 @@ CONFIG.stats.forEach((s, i) => {
 });
 CONFIG.memories.forEach((m, i) => {
   const li = mk("li", "rv", i), b = document.createElement("b");
-  b.textContent = m.y; li.append(b, document.createTextNode(m.t)); $("timeline").append(li);
+  b.textContent = m.y; li.append(b, document.createTextNode(m.t));
+  if (m.img) li.append(photo(m.img, m.t));   // фото к воспоминанию: img: "photos/2.jpg"
+  $("timeline").append(li);
 });
+
+/* ===== кастомизация: тема, фото, видео, порядок разделов, музыка ===== */
+if (CONFIG.theme) { root.style.setProperty("--gold", CONFIG.theme.accent); root.style.setProperty("--blue", CONFIG.theme.blue); }
+const GAL = CONFIG.gallery || [], VID = CONFIG.videos || [];
+GAL.forEach((g, i) => {
+  const f = mk("figure", "ph rv", i), cap = document.createElement("figcaption");
+  cap.textContent = g.caption || ""; f.append(photo(g.src, g.caption), cap); $("gallery").append(f);
+});
+VID.forEach((v, i) => {
+  const w = mk("div", "vid rv", i); let m;
+  if (v.youtube) {
+    m = document.createElement("iframe");
+    m.src = "https://www.youtube-nocookie.com/embed/" + v.youtube;
+    m.allow = "encrypted-media; picture-in-picture"; m.allowFullscreen = true; m.loading = "lazy"; m.title = v.title || "Видео";
+  } else {
+    m = document.createElement("video");
+    m.src = v.src; m.controls = true; m.playsInline = true; m.preload = "metadata"; if (v.poster) m.poster = v.poster;
+  }
+  w.append(m);
+  if (v.title) { const t = document.createElement("p"); t.textContent = v.title; w.append(t); }
+  $("videos").append(w);
+});
+const main = document.querySelector("main"), byId = {};
+main.querySelectorAll("section").forEach((sec) => (byId[sec.dataset.id] = sec));
+const order = CONFIG.sections || Object.keys(byId);
+const empty = { gallery: !GAL.length, video: !VID.length, game: !(CONFIG.game && CONFIG.game.enabled) };
+order.forEach((id) => { if (byId[id] && !empty[id]) main.append(byId[id]); });
+Object.keys(byId).forEach((id) => { if (!order.includes(id) || empty[id]) byId[id].remove(); });
+if (CONFIG.music) {
+  const bgm = $("bgm"), sb = $("sound");
+  bgm.src = CONFIG.music; sb.hidden = false;
+  sb.onclick = () => { if (bgm.paused) { bgm.play(); sb.textContent = "🔊"; } else { bgm.pause(); sb.textContent = "🔇"; } };
+}
 
 /* появление блоков и счётчики */
 function count(el) {
@@ -118,6 +210,15 @@ function layout() {
 }
 img.addEventListener("load", () => { layout(); update(); });
 
+/* припаркованные машины на фоне */
+const PK = [];
+(CONFIG.parked || []).forEach((p) => [].concat(p.at).forEach((at) => {
+  const im = document.createElement("img");
+  im.className = "pcar"; im.src = p.src; im.alt = ""; im.onerror = () => im.remove();
+  $("parked").append(im);
+  PK.push({ el: im, at, scale: p.scale || 0.85, bottom: p.bottom == null ? 8 : p.bottom, mirror: !!p.mirror });
+}));
+
 /* скролл: поездка */
 let lastY = 0, lastT = performance.now(), speed = 0, ticking = false, fired = false;
 function update() {
@@ -135,7 +236,19 @@ function update() {
   root.style.setProperty("--rx", -y * 1.4 + "px");
   $("cityNear").style.backgroundPositionX = -y * 0.3 + "px";
   $("cityFar").style.backgroundPositionX = -y * 0.12 + "px";
-  $("poles").style.backgroundPositionX = -y * 1.6 + "px";
+  root.style.setProperty("--lx", -y * 1.6 + "px");
+  const boost = (cxm) => {   // подсветка машины рядом с фонарём
+    const lamp = (360 - y * 1.6) % 720, d0 = (((cxm - lamp) % 720) + 720) % 720, d = Math.min(d0, 720 - d0);
+    return 1 + 0.3 * Math.exp(-((d / 170) ** 2));
+  };
+  car.style.filter = `brightness(${boost(x + W * 0.5).toFixed(3)})`;
+  PK.forEach((k) => {         // стоят на месте, уезжают назад вместе с дорогой
+    const w = W * k.scale, cxp = innerWidth * 0.5 + (k.at * max - y) * 1.4, left = cxp - w / 2;
+    if (left > innerWidth + 60 || left + w < -60) { k.el.style.visibility = "hidden"; return; }
+    k.el.style.visibility = "visible"; k.el.style.width = w + "px"; k.el.style.bottom = k.bottom + "vh";
+    k.el.style.transform = `translate3d(${left}px,0,0)${k.mirror ? " scaleX(-1)" : ""}`;
+    k.el.style.filter = `brightness(${(0.72 * boost(cxp)).toFixed(3)}) drop-shadow(0 5px 6px rgba(0,0,0,.6))`;
+  });
   $("stars").style.backgroundPositionX = -y * 0.05 + "px";
   if (p < 0.8) fired = false;
   if (p > 0.985 && !fired && document.body.classList.contains("started")) { fired = true; salute(); }
@@ -167,6 +280,7 @@ $("start").addEventListener("click", () => {
   document.body.classList.remove("lock");
   document.body.classList.add("started");
   rev();
+  if (CONFIG.music) $("bgm").play().catch(() => {});
 });
 
 /* салют */

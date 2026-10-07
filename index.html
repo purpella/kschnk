@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>С днём рождения!</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -22,6 +22,7 @@
 <div class="city near" id="cityNear"></div>
 <div class="road" id="road"></div>
 
+<div class="parked" id="parked"></div>
 <div class="car" id="car">
   <div class="shadow"></div>
   <div class="beam" id="beam"></div>
@@ -31,31 +32,49 @@
 
 <p id="nocar" hidden>Положи картинку <b>car.png</b> в ту же папку, где лежит index.html</p>
 <div class="hud" aria-hidden="true"><span id="kmh">0</span> км/ч</div>
+<button class="sound" id="sound" type="button" hidden aria-label="Музыка">🔊</button>
+<audio id="bgm" loop></audio>
 <nav class="dots" id="dots" aria-label="Разделы"></nav>
 
 <main>
-  <section data-title="Старт" class="stop">
+  <section data-id="hero" data-title="Старт" class="stop">
     <h1 class="rv">С днём рождения, <span id="name">Кащ</span>!</h1>
     <p class="lead rv" style="--i:1" id="subtitle"></p>
     <p class="hint rv" style="--i:2">Листай вниз: машина поедет вместе с тобой</p>
   </section>
 
-  <section data-title="Пожелания" class="stop">
+  <section data-id="wishes" data-title="Пожелания" class="stop">
     <h2 class="rv">Пожелания в дорогу</h2>
     <div class="cards" id="cards"></div>
   </section>
 
-  <section data-title="Приборка" class="stop">
+  <section data-id="gallery" data-title="Фото" class="stop">
+    <h2 class="rv">Мувики из прошлого</h2>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section data-id="stats" data-title="Приборка" class="stop">
     <h2 class="rv">Приборная панель твоего года</h2>
     <div class="cards" id="stats"></div>
   </section>
 
-  <section data-title="Дорога" class="stop">
-    <h2 class="rv">Что мы уже проехали</h2>
+  <section data-id="road" data-title="Дорога" class="stop">
+    <h2 class="rv">Места roadtrip-ов</h2>
     <ol class="tl" id="timeline"></ol>
   </section>
 
-  <section data-title="Финиш" class="stop">
+  <section data-id="video" data-title="Видео" class="stop">
+    <h2 class="rv">Видео</h2>
+    <div class="videos" id="videos"></div>
+  </section>
+
+  <section data-id="game" data-title="Игра" class="stop">
+    <h2 class="rv" id="gameTitle"></h2>
+    <p class="lead rv" style="--i:1" id="gameLead"></p>
+    <button class="rv" style="--i:2" id="gameOpen" type="button">Играть</button>
+  </section>
+
+  <section data-id="finish" data-title="Финиш" class="stop">
     <h2 class="rv">Это не финиш, а новый старт</h2>
     <p class="lead rv" style="--i:1" id="final"></p>
     <button class="rv" style="--i:2" id="salute" type="button">Салют</button>
@@ -63,7 +82,21 @@
   </section>
 </main>
 
+<div class="modal" id="gameModal" hidden role="dialog" aria-modal="true" aria-label="Мини-игра">
+  <button class="x" id="gameClose" type="button" aria-label="Закрыть">✕</button>
+  <div class="gwrap">
+    <canvas id="gameCv" width="360" height="600"></canvas>
+    <div class="gpanel" id="gpanel"></div>
+  </div>
+</div>
+
+<div class="modal lb" id="lightbox" hidden>
+  <img id="lbImg" alt="">
+  <p id="lbCap"></p>
+</div>
+
 <canvas id="confetti"></canvas>
 <script src="script.js"></script>
+<script src="game.js"></script>
 </body>
 </html>
